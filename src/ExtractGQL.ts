@@ -2,6 +2,7 @@
 
 import fs = require('fs');
 import path = require('path');
+const hasha = require('hasha');
 
 import {
   parse,
@@ -153,7 +154,8 @@ export class ExtractGQL {
       const transformedQueryWithFragments = this.getQueryFragments(transformedDocument, transformedDefinition);
       transformedQueryWithFragments.definitions.unshift(transformedDefinition);
       const docQueryKey = this.getQueryDocumentKey(transformedQueryWithFragments);
-      result[docQueryKey] = this.getQueryId();
+      // result[docQueryKey] = this.getQueryId();
+      result[docQueryKey] = hasha(docQueryKey);
     });
     return result;
   }
