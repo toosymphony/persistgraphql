@@ -302,7 +302,7 @@ export class ExtractGQL {
     return new Promise<void>((resolve, reject) => {
       fs.open(outputFilePath, 'w+', (openErr, fd) => {
         if (openErr) { reject(openErr); }
-        fs.write(fd, JSON.stringify(outputMap), (writeErr, written, str) => {
+        fs.write(fd, `export const queryMap = ${JSON.stringify(outputMap)}`, (writeErr, written, str) => {
           if (writeErr) { reject(writeErr); }
           resolve();
         });
