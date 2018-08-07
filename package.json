@@ -28,7 +28,7 @@
     "persistgraphql": "./bin/persistgraphql"
   },
   "dependencies": {
-    "apollo-client": "^1.1",
+    "apollo-client": "2.2.0",
     "graphql": "0.12.3",
     "graphql-tag": "2.6.1",
     "hasha": "^3.0.0",
