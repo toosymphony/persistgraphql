@@ -175,16 +175,13 @@ export class ExtractGQL {
 
   // Creates an OutputMap from an array of GraphQL documents read as strings.
   public createOutputMapFromString(docString: string): OutputMap {
-    var resultMaps = [{}];
-    if (docString.length > 0) {
-        const doc = parse(docString);
-        const docMap = separateOperations(doc);
+    const doc = parse(docString);
+    const docMap = separateOperations(doc);
 
-        const resultMaps = Object.keys(docMap).map((operationName) => {
-            const document = docMap[operationName];
-            return this.createMapFromDocument(document);
-        });
-    }
+    const resultMaps = Object.keys(docMap).map((operationName) => {
+        const document = docMap[operationName];
+        return this.createMapFromDocument(document);
+    });
     return (_.merge({} as OutputMap, ...resultMaps) as OutputMap);
   }
 
