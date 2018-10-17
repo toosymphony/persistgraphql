@@ -154,8 +154,7 @@ export class ExtractGQL {
       const transformedQueryWithFragments = this.getQueryFragments(transformedDocument, transformedDefinition);
       transformedQueryWithFragments.definitions.unshift(transformedDefinition);
       const docQueryKey = this.getQueryDocumentKey(transformedQueryWithFragments);
-      // result[docQueryKey] = this.getQueryId();
-      result[docQueryKey] = hasha(docQueryKey);
+      result[docQueryKey] = this.getQueryId(docQueryKey);
     });
     return result;
   }
@@ -176,14 +175,16 @@ export class ExtractGQL {
 
   // Creates an OutputMap from an array of GraphQL documents read as strings.
   public createOutputMapFromString(docString: string): OutputMap {
-    const doc = parse(docString);
-    const docMap = separateOperations(doc);
+    var resultMaps = [{}];
+    if (docString.length > 0) {
+        const doc = parse(docString);
+        const docMap = separateOperations(doc);
 
-    const resultMaps = Object.keys(docMap).map((operationName) => {
-      const document = docMap[operationName];
-      return this.createMapFromDocument(document);
-    });
-
+        const resultMaps = Object.keys(docMap).map((operationName) => {
+            const document = docMap[operationName];
+            return this.createMapFromDocument(document);
+        });
+    }
     return (_.merge({} as OutputMap, ...resultMaps) as OutputMap);
   }
 
@@ -292,9 +293,9 @@ export class ExtractGQL {
   }
 
   // Returns unique query ids.
-  public getQueryId() {
+  public getQueryId(queryKey: string) {
     this.queryId += 1;
-    return this.queryId;
+    return hasha(queryKey);
   }
 
   // Writes an OutputMap to a given file path.
@@ -302,7 +303,7 @@ export class ExtractGQL {
     return new Promise<void>((resolve, reject) => {
       fs.open(outputFilePath, 'w+', (openErr, fd) => {
         if (openErr) { reject(openErr); }
-        fs.write(fd, `export const queryMap = ${JSON.stringify(outputMap)}`, (writeErr, written, str) => {
+        fs.write(fd, JSON.stringify(outputMap), (writeErr, written, str) => {
           if (writeErr) { reject(writeErr); }
           resolve();
         });
@@ -344,6 +345,7 @@ export const main = (argv: YArgsv) => {
 
   if (args.length < 1) {
     console.log('Usage: persistgraphql input_file [output_file]');
+    process.exit(1);
   } else if (args.length === 1) {
     inputFilePath = args[0];
   } else {

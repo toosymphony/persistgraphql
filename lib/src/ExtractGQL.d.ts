@@ -31,7 +31,7 @@ export declare class ExtractGQL {
     processInputPath(inputPath: string): Promise<OutputMap>;
     readInputPath(inputPath: string): Promise<string>;
     getQueryFragments(document: DocumentNode, queryDefinition: OperationDefinitionNode): DocumentNode;
-    getQueryId(): number;
+    getQueryId(queryKey: string): any;
     writeOutputMap(outputMap: OutputMap, outputFilePath: string): Promise<void>;
     extract(): void;
 }
